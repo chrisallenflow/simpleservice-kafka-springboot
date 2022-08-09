@@ -1,0 +1,25 @@
+{
+  "command": "addtwo",
+  "input": [
+    {
+      "key": "val1",
+      "value": 5,
+      "type": "Integer"
+    },
+    {
+      "key": "val2",
+      "value": 7,
+      "type": "Integer"
+    }
+  ],
+  "camunda": {
+    "processInstance": 123412341234,
+    "messageCorrelationKey": "addTwoResult",
+    "outputMappings": [
+      {
+        "variableName": "result",
+        "mapsTo": "sum"
+      }
+    ]
+  }
+}
