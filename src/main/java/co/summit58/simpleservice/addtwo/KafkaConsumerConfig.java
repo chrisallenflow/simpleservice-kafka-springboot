@@ -30,7 +30,7 @@ public class KafkaConsumerConfig {
         return props;
     }
 
-    // String Consumer Configuration
+    // String SimpleConsumer Configuration
 
     @Bean
     public ConsumerFactory<String, String> stringConsumerFactory() {
