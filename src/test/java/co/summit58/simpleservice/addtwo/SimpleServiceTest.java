@@ -38,17 +38,25 @@ class SimpleServiceTest {
 
 	CountDownLatch latch = new CountDownLatch(1);
 
+	/**
+	 * Test the microservice.
+	 *
+	 * @throws Exception
+	 */
 	@Test
 	void addSum() throws Exception {
 
 		// send the request to add two numbers
 		template.send(requestTopic, getRequest());
-
+		// confirm that the web service consumed the message
 		boolean messageConsumed = consumer.getLatch().await(10, TimeUnit.SECONDS);
 		assertTrue(messageConsumed);
+		// after adding the two number, it should automatically be posting the result to the response topic.
+		// check that here.  The result() method below will grab the final response in order to continue testing.
 		boolean resultConsumed = this.latch.await(10, TimeUnit.SECONDS);
 		assertTrue(resultConsumed);
 
+		// in the final result, confirm that the values are added properly.
 		int i = 0;
 		for (Iterator<JsonNode> it = resultNode.get("input").elements(); it.hasNext(); ) {
 			JsonNode node = it.next();
@@ -66,12 +74,24 @@ class SimpleServiceTest {
 
 	}
 
+	/**
+	 * Read a sample request JSON payload from the root of this project and return a Jackson object.
+	 *
+	 * @return
+	 * @throws Exception
+	 */
 	private Object getRequest() throws Exception {
 		File file = new File("payload-request-example.json");
 		ObjectMapper objectMapper = new ObjectMapper();
 		return objectMapper.readTree(file);
 	}
 
+	/**
+	 * Listen for the final result and save a Jackson object as a member variable for use in the test method.
+	 *
+	 * @param cr
+	 * @param payload
+	 */
 	@KafkaListener(topics = "${response.topic.name}", clientIdPrefix = "string",
 			containerFactory = "kafkaListenerStringContainerFactory")
 	public void receive(ConsumerRecord<String, String> cr, @Payload String payload) {

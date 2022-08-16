@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 
 # Sets up a multi-node Kafka cluster w/ 3 brokers w/ the following listeners:
 #  - broker1 listening (external/internal): localhost:9091 / broker1:29091
@@ -6,6 +6,19 @@ version: '2'
 #  - broker3 listening (external/internal): localhost:9093 / broker3:29093
 
 services:
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prometheus-data:/prometheus
+    command: --web.enable-lifecycle  --config.file=/etc/prometheus/prometheus.yml
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     hostname: zookeeper
@@ -92,3 +105,6 @@ services:
       CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
       CONFLUENT_METRICS_TOPIC_REPLICATION: 1
       PORT: 9021
+
+volumes:
+  prometheus-data:

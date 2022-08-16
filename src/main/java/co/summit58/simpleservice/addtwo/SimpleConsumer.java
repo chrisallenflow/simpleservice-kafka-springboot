@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.micrometer.core.annotation.Timed;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,7 @@ public class SimpleConsumer {
 
     @KafkaListener(topics = "${request.topic.name}", clientIdPrefix = "string",
             containerFactory = "kafkaListenerStringContainerFactory")
+    @Timed(value = "consumer.process.time", description = "Time taken to process payload.")
     public void receive(ConsumerRecord<String, String> cr, @Payload String payload) {
         LOGGER.info("received payload='{}'", payload);
         try {
@@ -55,7 +57,7 @@ public class SimpleConsumer {
      * @throws JsonProcessingException
      * @throws RuntimeException
      */
-    private ObjectNode processPayload(String payload) throws JsonProcessingException, RuntimeException {
+    public ObjectNode processPayload(String payload) throws JsonProcessingException, RuntimeException {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode actualObj = mapper.readTree(payload);
         if (actualObj.get("command") == null ||
