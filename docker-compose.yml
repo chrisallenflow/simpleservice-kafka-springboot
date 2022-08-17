@@ -106,5 +106,17 @@ services:
       CONFLUENT_METRICS_TOPIC_REPLICATION: 1
       PORT: 9021
 
+  grafana:
+    container_name: grafana
+    hostname: grafana
+    image: grafana/grafana
+    volumes:
+      - ./grafana/grafana_datasources.yml:/etc/grafana/provisioning/datasources/all.yaml
+      - ./grafana/grafana_config.ini:/etc/grafana/config.ini
+      - grafana-data:/var/lib/grafana
+    ports:
+      - "3000:3000"
+
 volumes:
   prometheus-data:
+  grafana-data:

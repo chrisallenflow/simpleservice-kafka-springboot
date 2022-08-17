@@ -1,6 +1,17 @@
 # Introduction
 
-This represents a simple example of a microservice utilizing the Spring Boot Framework, Spring for Apache Kafka, and Apache Kafka itself.  It also utilizes the combination of Micrometer and Prometheus for active monitoring of the microservice.
+This represents a simple example of a microservice utilizing the following frameworks, libraries, and technologies:
+- Spring Boot Framework
+- Spring for Apache Kafka
+- Spring Actuator
+- Apache Kafka
+- Micrometer
+- Prometheus
+- Grafana
+
+It utilizes combination of Actuator, Micrometer, Prometheus and Grafana for active monitoring of the microservice.
+
+Kafka is used for receiving and omitting commands to an event log.
 
 This logic of this microservice is extremely simple; to add two integers together and provide the sum in the response.
 
@@ -45,3 +56,10 @@ consumer_process_time_seconds_sum{class="co.summit58.simpleservice.addtwo.Simple
 # TYPE consumer_process_time_seconds_max gauge
 ```
 - http://localhost:9090 - This is the provided Prometheus front end.  On the top menu select "Graph", and between the subtabs of "Table" and "Graph" select "Graph".  For the query expression paste "consumer_process_time_seconds_max" and execute the query to view the graph.
+8. Now lets look at the Grafana front end.  Navigate to http://localhost:3000 to open Grafana.  User/pass admin/admin.
+9. Add Panel -> Add a New Panel
+10. In bottom left panel, for Data Source, select "Prometheus".
+11. In the "Metric" dropdown, select "consumer_process_time_seconds_max", then select "Run queries" button.
+12. Change the view range to "last 6 hours" from the dropdown on the top of the graph.
+13. In the upper right corner, click "Apply". 
+14. Repeat this process as needed for Timers in your microservice.  You can also create graphs in Granana for other metrics provided by Prometheus.  Just check the dropdown for more values.
